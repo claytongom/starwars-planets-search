@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 
 function Table() {
-  const { searchPlanet, data, setName } = useContext(PlanetsContext);
+  const { searchPlanet, data, setName, filterAdd } = useContext(PlanetsContext);
 
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
@@ -13,19 +13,14 @@ function Table() {
     setName(e.target.value);
   };
 
-  // useEffect(() => {
-  //   const filter = data.filter((planet) => {
-  //     if (comparison === 'maior que') {
-  //       return planet[column] > value;
-  //     }
-  //     if (comparison === 'menor que') {
-  //       return planet[column] < value;
-  //     }
-  //     if (comparison === 'igual a') {
-  //       return planet[column] === value;
-  //     }
-  //   });
-  // }, [column, comparison, value, data, filterPlanet]);
+  const handleClick = () => {
+    const dataFilters = {
+      column,
+      comparison,
+      value,
+    };
+    filterAdd(dataFilters);
+  };
 
   return (
     <div>
@@ -47,7 +42,7 @@ function Table() {
           onChange={ (e) => setColumn(e.target.value) }
         >
           <option value="population">population</option>
-          <option value="orbital_period">orbital_Period</option>
+          <option value="orbital_period">orbital_period</option>
           <option value="diameter">diameter</option>
           <option value="rotation_period">rotation_period</option>
           <option value="surface_water">surface_water</option>
@@ -62,8 +57,8 @@ function Table() {
           onChange={ (e) => setComparison(e.target.value) }
         >
           <option value="maior que">maior que</option>
-          <option value="menor que">maior que</option>
-          <option value="igual a">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
         </select>
       </label>
       <label htmlFor="value-filter">
@@ -79,7 +74,7 @@ function Table() {
       <button
         type="button"
         data-testid="button-filter"
-        // onclick={}
+        onClick={ handleClick }
       >
         Filtrar
       </button>
