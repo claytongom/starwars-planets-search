@@ -5,6 +5,8 @@ import fetchPlanets from '../services/PlanetsApiRequest';
 
 function PlanetsProvider({ children }) {
   const [data, setData] = useState([]);
+  const [searchPlanet, setSearchPlanet] = useState(data);
+  const [name, setName] = useState('');
 
   useEffect(
     () => {
@@ -12,11 +14,18 @@ function PlanetsProvider({ children }) {
     },
     [],
   );
+  useEffect(() => {
+    const filter = () => setSearchPlanet(
+      data.filter((planet) => planet.name.includes(name)),
+    );
+    filter();
+  }, [data, name]);
 
   const context = useMemo(() => ({
+    searchPlanet,
     data,
-    setData,
-  }), [data, setData]);
+    setName,
+  }), [data, searchPlanet, setName]);
 
   return (
     <PlanetsContext.Provider value={ context }>
