@@ -3,11 +3,20 @@ import React, { useState, useEffect, useMemo } from 'react';
 import PlanetsContext from './PlanetsContext';
 import fetchPlanets from '../services/PlanetsApiRequest';
 
+const options = [
+  'population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water',
+];
+
 function PlanetsProvider({ children }) {
   const [data, setData] = useState([]);
   const [searchPlanet, setSearchPlanet] = useState(data);
   const [name, setName] = useState('');
   const [filter, setFilter] = useState([]);
+  const [columnFilter, setColumnFilter] = useState(options);
 
   useEffect(
     () => {
@@ -48,6 +57,10 @@ function PlanetsProvider({ children }) {
         }));
       });
     };
+
+    const filterColumn = columnFilter
+      .filter((columnSelected) => filter.find(({ column }) => column !== columnSelected));
+    setColumnFilter(filterColumn);
     filterPlanets();
   }, [data, filter]);
 
@@ -56,7 +69,8 @@ function PlanetsProvider({ children }) {
     filterAdd,
     data,
     setName,
-  }), [data, searchPlanet, setName]);
+    columnFilter,
+  }), [data, searchPlanet, setName, columnFilter]);
 
   return (
     <PlanetsContext.Provider value={ context }>

@@ -2,7 +2,12 @@ import React, { useContext, useState } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 
 function Table() {
-  const { searchPlanet, data, setName, filterAdd } = useContext(PlanetsContext);
+  const { searchPlanet,
+    data,
+    setName,
+    filterAdd,
+    columnFilter
+  } = useContext(PlanetsContext);
 
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
@@ -41,11 +46,9 @@ function Table() {
           value={ column }
           onChange={ (e) => setColumn(e.target.value) }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          { columnFilter.map((columnItem) => (
+            <option key={ columnItem } value={ columnItem }>{columnItem}</option>
+          ))}
         </select>
       </label>
       <label htmlFor="comparison-filter">
