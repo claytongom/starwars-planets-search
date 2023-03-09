@@ -3,19 +3,32 @@ import PlanetsContext from '../context/PlanetsContext';
 
 function Table() {
   const { searchPlanet,
-    data,
     setName,
     filterAdd,
-    columnFilter
+    columnFilter,
+    setColumnFilter,
+    removeAllFilters,
+    data,
+    setSearchPlanet,
+    setFilterSelect,
+    filterSelect,
   } = useContext(PlanetsContext);
 
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [value, setValue] = useState(0);
-  console.log(searchPlanet, data);
+  // const [filterSelect, setFilterSelect] = useState([]);
 
   const handleChange = (e) => {
     setName(e.target.value);
+  };
+
+  const handleFilterSelect = () => {
+    setFilterSelect([...filterSelect, {
+      column,
+      comparison,
+      value,
+    }]);
   };
 
   const handleClick = () => {
@@ -24,7 +37,22 @@ function Table() {
       comparison,
       value,
     };
+    const filteredColumn = columnFilter
+      .filter((elem) => elem !== dataFilters.column);
+    setColumnFilter(filteredColumn);
+    setColumn(filteredColumn[0]);
     filterAdd(dataFilters);
+    setComparison('maior que');
+    setValue(0);
+    handleFilterSelect();
+  };
+
+  const handleRemoveFilterSelect = (index, filterColumn) => {
+    const newFilterSelect = [...filterSelect];
+    newFilterSelect.splice(index, 1);
+    setFilterSelect(newFilterSelect);
+    setSearchPlanet(data);
+    setColumnFilter((prevState) => [...prevState, filterColumn]);
   };
 
   return (
@@ -41,6 +69,7 @@ function Table() {
       <label htmlFor="column-filter">
         Filtrar por coluna:
         <select
+          id="column-filter"
           name="column-filter"
           data-testid="column-filter"
           value={ column }
@@ -54,7 +83,8 @@ function Table() {
       <label htmlFor="comparison-filter">
         Comparação:
         <select
-          name="comparison-filter"
+          id="comparison-filter"
+          name="comparison"
           data-testid="comparison-filter"
           value={ comparison }
           onChange={ (e) => setComparison(e.target.value) }
@@ -67,6 +97,7 @@ function Table() {
       <label htmlFor="value-filter">
         Valor:
         <input
+          id="value-filter"
           type="number"
           name="value-filter"
           data-testid="value-filter"
@@ -81,6 +112,29 @@ function Table() {
       >
         Filtrar
       </button>
+      <button
+        type="button"
+        data-testid="button-remove-filters"
+        onClick={ removeAllFilters }
+      >
+        Remove todas filtragens
+      </button>
+      <div>
+        {filterSelect.map((f, index) => (
+          <div data-testid="filter" key={ index }>
+            <p>{f.column}</p>
+            <p>{f.comparison}</p>
+            <p>{f.value}</p>
+            <button
+              type="button"
+              data-testid="button-remove-filterSelect"
+              onClick={ () => handleRemoveFilterSelect(index, f.column) }
+            >
+              X
+            </button>
+          </div>
+        ))}
+      </div>
       <table>
         <thead>
           <tr>
