@@ -50,10 +50,8 @@ function PlanetsProvider({ children }) {
             return Number(planet[column]) > Number(value);
           case 'menor que':
             return Number(planet[column]) < Number(value);
-          case 'igual a':
-            return Number(planet[column]) === Number(value);
           default:
-            return true;
+            return Number(planet[column]) === Number(value);
           }
         }));
       });
@@ -105,4 +103,3 @@ PlanetsProvider.propTypes = {
 };
 
 export default PlanetsProvider;
-//
